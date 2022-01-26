@@ -182,7 +182,8 @@ void test_other_funcs(){
 
     int N = 20;
     float* test_arr = createArrayTesting(N);
-//    display(test_arr, N);
+    printf("teat_Array is:");
+    display(test_arr, N);
 
     //finding the max of the array
     printf("The max of the array is %f and should be  587129344.000000\n", max(test_arr,N));
@@ -190,6 +191,27 @@ void test_other_funcs(){
 
     //finding the std of the array because it relies on mean which relies on sum
     printf("The std of the array is %f and should be  404133132.38483\n", std(test_arr,N));
+
+    float* test_arr2 = createAscendingArray(20);
+    printf("teat_Array2 is:");
+    display(test_arr2,20);
+
+    swapArrays(&test_arr,&test_arr2);
+
+    printf("teat_Array now is:");
+    display(test_arr,20);
+
+    printf("teat_Array2 now is:");
+    display(test_arr2,20);
+
+    //freeing the memory
+    free(test_arr);
+    free(test_arr2);
+
+    /*
+     * Shows it is memory safe in valgrid
+     *
+     * */
 }
 
 /* Main function */
