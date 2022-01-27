@@ -1,0 +1,4 @@
+# ninja log v5
+0	21	1643229915445774122	CMakeFiles/project1.dir/src/my_math.c.o	31b7af47f5d17cba
+0	21	1643229915445774122	CMakeFiles/project1.dir/src/test_my_math.c.o	c6801622366e9e9f
+0	21	1643229992312453021	CMakeFiles/project1.dir/src/test_my_math.c.o	c6801622366e9e9f

@@ -1,0 +1,3 @@
+/home/matt3080/Colby_school/CS336_Parallel/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/matt3080/Colby_school/CS336_Parallel/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/matt3080/Colby_school/CS336_Parallel/cmake-build-debug/CMakeFiles/CS336_Parallel.dir

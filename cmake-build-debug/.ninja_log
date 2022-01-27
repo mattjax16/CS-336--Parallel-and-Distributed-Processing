@@ -1,0 +1,14 @@
+# ninja log v5
+0	8	1643220114606284723	build.ninja	52e180c3a214f711
+0	19	1643219750514052097	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
+0	19	1643214385747408176	CMakeFiles/CS336_Parallel.dir/project1/test_my_math.c.o	e021badb62dcd56
+0	22	1643219750522052098	CMakeFiles/CS336_Parallel.dir/project1/src/test_my_math.c.o	4cbc983890fc3fa9
+0	16	1643214385747408176	CMakeFiles/CS336_Parallel.dir/project1/my_math.c.o	1f696aca4a96690a
+0	8	1643220114606284723	build.ninja	52e180c3a214f711
+0	16	1643220114626284739	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
+0	15	1643220224646381181	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
+0	17	1643220396102547265	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
+1	27	1643220396114547278	CMakeFiles/CS336_Parallel.dir/project1/src/test_my_math.c.o	4cbc983890fc3fa9
+0	22	1643222239523030237	CMakeFiles/CS336_Parallel.dir/project1/src/test_my_math.c.o	4cbc983890fc3fa9
+0	26	1643222239523030237	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
+1	53	1643225786834715322	CMakeFiles/CS336_Parallel.dir/project1/src/my_math.c.o	91c6d081106bd217
