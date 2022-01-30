@@ -1,35 +1,34 @@
 /**
- * benford_parallel_A.c
+ * benford_parallel_E_1.c
  * Matt Bass
  * CS333
  * Project 4 : Confirming Benford's Law with pthreads
- * task 2 a
+ * task 2 E_1 (creating a 10*numthread array of ints)
  *
- * Global Counter Array Protected by Single Mutex:
- * Use a global variable (array of 10 ints) to keep track of the total count of
- * each digit (0 through 9). Since all threads will be reading and writing to it
- * like crazy, we need to protect it with a mutex lock.
- * So, make a global variable mutex lock. For each number the thread analyzes,
- * it locks the lock, updates the counter for the appropriate digit, and
- * then unlocks the lock.
- *
+ * Use a global variable that is an array of ints with 10*NUM_THREADS entries.
+ * The digit counts for each thread should be stored in that array.
+ * For this version store the counts for all digits for a single thread together
+ * (e.g. thread 0 uses entries 0 through 9, thread 1 uses entries 10 through 19, etc.).
+ * Because each thread has its own section of the array, there is no need for a mutex!
+ * After all the threads have joined, loop through this new array of arrays, and
+ * sum the counts for each digit.
  */
 
 /**
-Medium Expected Output on I9 10900k:
-There are 3217 1's
-There are 1779 2's
-There are 1121 3's
-There are 907 4's
-There are 745 5's
-There are 668 6's
-There are 591 7's
-There are 495 8's
-There are 477 9's
-It took 0.001155 seconds for the whole thing to run
+There are 5289 1's
+There are 5491 2's
+There are 5328 3's
+There are 5027 4's
+There are 4622 5's
+There are 4142 6's
+There are 3588 7's
+There are 3013 8's
+There are 2288 9's
+It took 0.000310 seconds for the whole thing to run
+Total numbers in file: 10000
 */
-
-/** Long Expected output on I9 10900k:
+/**
+Long Expected output on I9 10900k:
 There are 312705 1's
 There are 177336 2's
 There are 121034 3's
@@ -39,8 +38,14 @@ There are 65134 6's
 There are 57202 7's
 There are 51298 8's
 There are 46745 9's
-It took 0.120774 seconds for the whole thing to run
+It took 0.002179 seconds for the whole thing to run
+Total numbers in file: 1000000
 */
+
+/**
+ * The results from this show that this method is not good for getting a correct and accurate answer
+ * as the count of the number of leading digits of a file change every run showing that their is false sharing.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,16 +63,17 @@ It took 0.120774 seconds for the whole thing to run
 typedef struct _threadData{
     double* start;
     int len;
+    int tid;
 } threadData;
 
 
 // Global variables
-int global_counts[10] = {0,0,0,0,0,0,0,0,0,0};
+int threads_global_counts[10*NUM_THREADS] = {0};
+int global_counts[10] = {0};
 int N = 0;
 double *data;
 
-//create the single global mutex lock
-pthread_mutex_t lock_global;
+
 
 
 // Load data from a binary file that has an int and then
@@ -139,30 +145,15 @@ void* thrCount(void* arg){
     threadData *thr_data = (threadData *)arg;
 
 
-
-
     //loop through all the data in the thread info
     for(int i = 0; i<thr_data->len;i++){
         int leading_digit = leadingDigit(thr_data->start[i]);
 
-        //lock the thread before modifying the shared global array
-        pthread_mutex_lock(&lock_global);
-
         //increment the global count array
-        global_counts[leading_digit]++;
+        threads_global_counts[thr_data->tid+leading_digit]++;
 
-        //unlock the thread
-        pthread_mutex_unlock(&lock_global);
     }
-
-
-
-
-    //exit the thread
-    pthread_exit(NULL);
 }
-
-
 
 
 /* Main routine. */
@@ -198,6 +189,7 @@ int main(int argc, char* argv[])
         int idx = i*N/numThreads;
         thr_data[i].start = &data[idx];
         thr_data[i].len = N/numThreads;
+        thr_data[i].tid = i;
     }
 
     // create threads
@@ -210,6 +202,13 @@ int main(int argc, char* argv[])
         pthread_join(threads[i], NULL);
     }
 
+
+    //combine the threads_global_counts into global counts array
+    for (int i = 0; i < numThreads; i++) {
+        for(int j = 0; j<10;j++){
+            global_counts[j] += threads_global_counts[i+j];
+        };
+    }
 
     // End the timer
     t2 = get_time_sec();
@@ -225,8 +224,6 @@ int main(int argc, char* argv[])
     // for freeing the data array.
     free( data );
 
-    // destroy the mutex lock (we are done with it)
-    pthread_mutex_destroy(&lock_global);
 
     return 0;
 } // end main

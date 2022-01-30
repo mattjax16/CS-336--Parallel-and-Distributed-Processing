@@ -1,9 +1,12 @@
 # ninja log v5
 1	19	1643409439448433592	CMakeFiles/project4.dir/src/benford_sequential.c.o	298c1518f5126011
-0	8	1643411816022506326	build.ninja	4ebb3d7f68217d75
+0	9	1643576083739468957	build.ninja	4ebb3d7f68217d75
 0	10	1643411592203082725	CMakeFiles/project4.dir/src/my_timing.c.o	5e3a3b8940f700ca
-0	21	1643411592215082684	CMakeFiles/project4.dir/src/benford_parallel_A.c.o	4a17b621c27e1931
-22	35	1643409943586418948	project4	3c55a91b30d748ff
-1	13	1643411816978504514	project4	483b265c09f09203
-0	26	1643412008670226267	CMakeFiles/project4.dir/src/benford_parallel_A.c.o	4a17b621c27e1931
-26	38	1643412008682226255	project4	483b265c09f09203
+0	22	1643572716290638515	CMakeFiles/project4.dir/src/benford_parallel_A.c.o	4a17b621c27e1931
+0	25	1643574963128574980	CMakeFiles/project4.dir/src/benford_parallel_B.c.o	9a0dd99ff1d79d33
+0	22	1643574174829499446	CMakeFiles/project4.dir/src/benford_parallel_C.c.o	2e7fd0d822b08784
+1	23	1643576071035483270	CMakeFiles/project4.dir/src/benford_parallel_D.c.o	64a4da8ceafff45b
+23	35	1643576071047483256	project4	51fd33ed9a4d9764
+0	12	1643576083739468957	build.ninja	4ebb3d7f68217d75
+0	21	1643576083767468924	CMakeFiles/project4.dir/src/benford_parallel_E_1.c.o	a5804b3788a87a65
+21	34	1643576083779468910	project4	fa55c6606fc92a24

@@ -1,18 +1,15 @@
 /**
- * benford_parallel_A.c
+ * benford_parallel_D.c
  * Matt Bass
  * CS333
  * Project 4 : Confirming Benford's Law with pthreads
- * task 2 a
+ * task 2 D
  *
- * Global Counter Array Protected by Single Mutex:
- * Use a global variable (array of 10 ints) to keep track of the total count of
- * each digit (0 through 9). Since all threads will be reading and writing to it
- * like crazy, we need to protect it with a mutex lock.
- * So, make a global variable mutex lock. For each number the thread analyzes,
- * it locks the lock, updates the counter for the appropriate digit, and
- * then unlocks the lock.
- *
+ * Local Counter Array, with Final Update Protected by Array of Mutexes:
+ * Each thread should use a local variable (array of 10 ints) to keep track of the number
+ * of times it sees each digit as a leading digit. After it has looped through its section
+ * of the data, it should use one mutex per digit to protect the appropriate entry in
+ * the global array of counts and add its local count to it.
  */
 
 /**
@@ -26,10 +23,12 @@ There are 668 6's
 There are 591 7's
 There are 495 8's
 There are 477 9's
-It took 0.001155 seconds for the whole thing to run
+It took 0.000367 seconds for the whole thing to run
+Total numbers in file: 10000
 */
 
-/** Long Expected output on I9 10900k:
+/**
+Long Expected output on I9 10900k:
 There are 312705 1's
 There are 177336 2's
 There are 121034 3's
@@ -39,8 +38,11 @@ There are 65134 6's
 There are 57202 7's
 There are 51298 8's
 There are 46745 9's
-It took 0.120774 seconds for the whole thing to run
+It took 0.002179 seconds for the whole thing to run
+Total numbers in file: 1000000
 */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,13 +63,18 @@ typedef struct _threadData{
 } threadData;
 
 
+
+//create the array of global mutex locks for each number in the
+//global counts array
+pthread_mutex_t num_locks_global[10];
+
+
 // Global variables
 int global_counts[10] = {0,0,0,0,0,0,0,0,0,0};
 int N = 0;
 double *data;
 
-//create the single global mutex lock
-pthread_mutex_t lock_global;
+
 
 
 // Load data from a binary file that has an int and then
@@ -138,31 +145,39 @@ int leadingDigit( double n ) {
 void* thrCount(void* arg){
     threadData *thr_data = (threadData *)arg;
 
-
-
+    //creating local_count array
+    int local_counts[10] = {0,0,0,0,0,0,0,0,0,0};
 
     //loop through all the data in the thread info
     for(int i = 0; i<thr_data->len;i++){
         int leading_digit = leadingDigit(thr_data->start[i]);
 
-        //lock the thread before modifying the shared global array
-        pthread_mutex_lock(&lock_global);
-
         //increment the global count array
-        global_counts[leading_digit]++;
+        local_counts[leading_digit]++;
 
-        //unlock the thread
-        pthread_mutex_unlock(&lock_global);
+
     }
 
+
+
+    //loop through all the numbers in the local count and add them to
+    //the global counts
+    for(int i = 0; i<10;i++){
+
+        //lock the thread before modifying the shared global array count
+        pthread_mutex_lock(&num_locks_global[i]);
+
+        global_counts[i] += local_counts[i];
+
+        //unlock the thread
+        pthread_mutex_unlock(&num_locks_global[i]);
+    }
 
 
 
     //exit the thread
     pthread_exit(NULL);
 }
-
-
 
 
 /* Main routine. */
@@ -225,8 +240,12 @@ int main(int argc, char* argv[])
     // for freeing the data array.
     free( data );
 
-    // destroy the mutex lock (we are done with it)
-    pthread_mutex_destroy(&lock_global);
+    // destroy the mutex locks (we are done with it)
+    int destroy_succes = pthread_mutex_destroy(num_locks_global);
+
+    if(destroy_succes == -1){
+        printf("Warring mutex locks not destroyed");
+    }
 
     return 0;
 } // end main
