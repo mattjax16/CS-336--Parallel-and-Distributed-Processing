@@ -1,22 +1,23 @@
 /**
- * benford_parallel_E_1.c
+ * benford_parallel_F_1.c
  * Matt Bass
  * CS333
  * Project 4 : Confirming Benford's Law with pthreads
- * task 2 E_1 (creating a 10*numthread array of ints)
+ * task 2 F_1 (creating a 2D array leading_digit_thread)
  *
- * Global Counter Array of Arrays, Grouped by Thread, no Mutex:
- * Use a global variable that is an array of ints with 10*NUM_THREADS entries.
- * The digit counts for each thread should be stored in that array.
- * For this version store the counts for all digits for a single thread together
- * (e.g. thread 0 uses entries 0 through 9, thread 1 uses entries 10 through 19, etc.).
- * Because each thread has its own section of the array, there is no need for a mutex!
- * After all the threads have joined, loop through this new array of arrays, and
- * sum the counts for each digit.
+ * Global Counter Array of Arrays, Grouped by Digit, no Mutex:
+ * Use a global variable that is an array of ints with 10*NUMTHREADS entries. T
+ * he digit counts for each thread should be stored in that array.
+ * For this version store the counts from all the threads for a single digit together
+ * (e.g. entries 0 through NUMTHREADS-1 are used to keep track of the number of 0's,
+ * entries NUMTHREADS through 2*NUMTHREADS-1 are used to keep track of the number of 1's, etc.).
+ * Again, because each thread has its own section of the array, there is no need for a mutex!
+ * After all the threads have joined, loop through this new array of arrays,
+ * and sum the counts for each digit.
  */
 
 /**
-Long Expected output on I9 10900k:
+Medium Expected Output on I9 10900k:
 There are 3217 1's
 There are 1779 2's
 There are 1121 3's
@@ -26,7 +27,7 @@ There are 668 6's
 There are 591 7's
 There are 495 8's
 There are 477 9's
-It took 0.000229 seconds for the whole thing to run
+It took 0.000211 seconds for the whole thing to run
 Total numbers in file: 10000
 */
 /**
@@ -40,10 +41,13 @@ There are 65134 6's
 There are 57202 7's
 There are 51298 8's
 There are 46745 9's
-It took 0.004484 seconds for the whole thing to run
+It took 0.007845 seconds for the whole thing to run
 Total numbers in file: 1000000
 */
 
+/**
+ * These results are correct unlike E_1
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,7 +70,8 @@ typedef struct _threadData{
 
 
 // Global variables
-int threads_global_counts[10*NUM_THREADS] = {0};
+// Global variables
+int digits_global_counts[10][NUM_THREADS] = {0};
 int global_counts[10] = {0};
 int N = 0;
 double *data;
@@ -79,35 +84,27 @@ double *data;
 // the number of doubles in the sequence.
 // Load the data into global variables N and data.
 int loadData(char *filename) {
-  FILE *fp;
+    FILE *fp;
 
-  if(filename != NULL && strlen(filename))
-    fp = fopen(filename, "r");
-  else {
-      printf("No file entered (filename = %s)\n", filename);
-      return -1;
-  }
+    if(filename != NULL && strlen(filename))
+        fp = fopen(filename, "r");
+    else {
+        printf("No file entered (filename = %s)\n", filename);
+        return -1;
+    }
 
-  if (!fp){
-      printf("File %s not found!\n", filename);
-      return -1;
-  }
+    if (!fp){
+        printf("File %s not found!\n", filename);
+        return -1;
+    }
 
 
-  fread( &N, sizeof(int), 1, fp );
-  data = (double*)malloc( sizeof(double)*N );
-  fread( data, sizeof(double), N, fp );
-  fclose( fp );
-//   Uncomment this to verify the right data are being read in.
-//   For super_short.bin, it should print out
-//   data[0] = 97.137926;
-//   data[1] = 24.639612;
-//   data[2] = 55.692572;
-//   int i;
-//   for (i = 0; i < N; i++) {
-//         printf( "data[%d] = %f\n", i, data[i] );
-//   }
-  return 1; // success
+    fread( &N, sizeof(int), 1, fp );
+    data = (double*)malloc( sizeof(double)*N );
+    fread( data, sizeof(double), N, fp );
+    fclose( fp );
+
+    return 1; // success
 }
 
 // Return the leading Digit of n.
@@ -147,22 +144,14 @@ void* thrCount(void* arg){
     for(int i = 0; i<thr_data->len;i++){
         int leading_digit = leadingDigit(thr_data->start[i]);
 
-        //increment the global count array
-            //one way with if statements
-//        if(thr_data->tid == 0){
-//            threads_global_counts[leading_digit]++;
-//        } else{
-//            threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
-//        }
-        threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
-
+        digits_global_counts[leading_digit][thr_data->tid]++;
 
     }
 }
 
 
 /* Main routine. */
-int main(int argc, char* argv[]) 
+int main(int argc, char* argv[])
 {
 
     //Global function variables
@@ -170,8 +159,8 @@ int main(int argc, char* argv[])
     // Load the data
     int succ;
     // succ = loadData( "bin/longer_nonBenford.bin" );
-//      succ = loadData( "bin/medium.bin" );
-    succ = loadData( "bin/longer.bin" );
+      succ = loadData( "bin/medium.bin" );
+//    succ = loadData( "bin/longer.bin" );
 
 
 
@@ -209,19 +198,20 @@ int main(int argc, char* argv[])
 
 
     //combine the threads_global_counts into global counts array
-    for (int i = 0; i < numThreads; i++) {
-        for(int j = 0; j<10;j++){
-            global_counts[j] += threads_global_counts[(i*9)+j+i];
-        };
+
+    for (int j = 0; j<10;j++) {
+        for(int i = 0; i < numThreads; i++){
+            global_counts[j] += digits_global_counts[j][i];
+        }
     }
 
     // End the timer
     t2 = get_time_sec();
-  
+
     for (int i = 1; i < 10; i++) {
         printf( "There are %d %d's\n", global_counts[i], i );
     }
-         
+
     printf("It took %f seconds for the whole thing to run\n",t2-t1);
     printf("Total numbers in file: %d",N);
 

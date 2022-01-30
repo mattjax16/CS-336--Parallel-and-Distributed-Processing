@@ -78,8 +78,8 @@ build CMakeFiles/project4.dir/src/my_timing.c.o: C_COMPILER__project4_Debug /hom
   OBJECT_DIR = CMakeFiles/project4.dir
   OBJECT_FILE_DIR = CMakeFiles/project4.dir/src
 
-build CMakeFiles/project4.dir/src/benford_parallel_E_1.c.o: C_COMPILER__project4_Debug /home/matt3080/Colby_school/CS336_Parallel/project4/src/benford_parallel_E_1.c || cmake_object_order_depends_target_project4
-  DEP_FILE = CMakeFiles/project4.dir/src/benford_parallel_E_1.c.o.d
+build CMakeFiles/project4.dir/src/benford_parallel_F_2.c.o: C_COMPILER__project4_Debug /home/matt3080/Colby_school/CS336_Parallel/project4/src/benford_parallel_F_2.c || cmake_object_order_depends_target_project4
+  DEP_FILE = CMakeFiles/project4.dir/src/benford_parallel_F_2.c.o.d
   FLAGS = -lpthread -g -std=gnu99
   OBJECT_DIR = CMakeFiles/project4.dir
   OBJECT_FILE_DIR = CMakeFiles/project4.dir/src
@@ -92,7 +92,7 @@ build CMakeFiles/project4.dir/src/benford_parallel_E_1.c.o: C_COMPILER__project4
 #############################################
 # Link the executable project4
 
-build project4: C_EXECUTABLE_LINKER__project4_Debug CMakeFiles/project4.dir/src/my_timing.c.o CMakeFiles/project4.dir/src/benford_parallel_E_1.c.o
+build project4: C_EXECUTABLE_LINKER__project4_Debug CMakeFiles/project4.dir/src/my_timing.c.o CMakeFiles/project4.dir/src/benford_parallel_F_2.c.o
   FLAGS = -lpthread -g
   LINK_LIBRARIES = -lm  -lpthread
   OBJECT_DIR = CMakeFiles/project4.dir

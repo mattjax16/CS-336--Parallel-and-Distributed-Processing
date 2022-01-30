@@ -65,7 +65,7 @@ typedef struct _threadData{
 pthread_mutex_t num_locks_global[10];
 
 // Global variables
-int global_counts[10] = {0,0,0,0,0,0,0,0,0,0};
+int global_counts[10] = {0};
 int N = 0;
 double *data;
 

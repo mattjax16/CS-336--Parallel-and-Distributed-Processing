@@ -1,9 +1,9 @@
 /**
- * benford_parallel_E_1.c
+ * benford_parallel_E_2.c
  * Matt Bass
  * CS333
  * Project 4 : Confirming Benford's Law with pthreads
- * task 2 E_1 (creating a 10*numthread array of ints)
+ * task 2 E_2 (creating a num_thread array of array of 10 ints (2d array))
  *
  * Global Counter Array of Arrays, Grouped by Thread, no Mutex:
  * Use a global variable that is an array of ints with 10*NUM_THREADS entries.
@@ -16,7 +16,7 @@
  */
 
 /**
-Long Expected output on I9 10900k:
+Medium Expected Output on I9 10900k:
 There are 3217 1's
 There are 1779 2's
 There are 1121 3's
@@ -26,7 +26,7 @@ There are 668 6's
 There are 591 7's
 There are 495 8's
 There are 477 9's
-It took 0.000229 seconds for the whole thing to run
+It took 0.000188 seconds for the whole thing to run
 Total numbers in file: 10000
 */
 /**
@@ -40,10 +40,13 @@ There are 65134 6's
 There are 57202 7's
 There are 51298 8's
 There are 46745 9's
-It took 0.004484 seconds for the whole thing to run
+It took 0.004254 seconds for the whole thing to run
 Total numbers in file: 1000000
 */
 
+/**
+ * These results are correct unlike E_1
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,7 +69,9 @@ typedef struct _threadData{
 
 
 // Global variables
-int threads_global_counts[10*NUM_THREADS] = {0};
+int threads_global_counts[NUM_THREADS][10] = {0,0,0,0,0,0,0,0,0,0};
+
+
 int global_counts[10] = {0};
 int N = 0;
 double *data;
@@ -148,14 +153,7 @@ void* thrCount(void* arg){
         int leading_digit = leadingDigit(thr_data->start[i]);
 
         //increment the global count array
-            //one way with if statements
-//        if(thr_data->tid == 0){
-//            threads_global_counts[leading_digit]++;
-//        } else{
-//            threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
-//        }
-        threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
-
+        threads_global_counts[thr_data->tid][leading_digit]++;
 
     }
 }
@@ -211,7 +209,7 @@ int main(int argc, char* argv[])
     //combine the threads_global_counts into global counts array
     for (int i = 0; i < numThreads; i++) {
         for(int j = 0; j<10;j++){
-            global_counts[j] += threads_global_counts[(i*9)+j+i];
+            global_counts[j] += threads_global_counts[i][j];
         };
     }
 
