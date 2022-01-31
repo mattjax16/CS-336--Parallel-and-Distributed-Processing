@@ -65,6 +65,8 @@ It took 0.014354 seconds for the whole thing to run
 #include <math.h>
 #include "my_timing.h"
 
+
+
 // Global variables
 int global_counts[10] = {0,0,0,0,0,0,0,0,0,0};
 int N = 0;
@@ -99,8 +101,8 @@ int loadData(char *filename) {
 //   data[0] = 97.137926;
 //   data[1] = 24.639612;
 //   data[2] = 55.692572;
-//   int i;
-//   for (i = 0; i < N; i++) {
+
+//   for (int i = 0; i < N; i++) {
 //         printf( "data[%d] = %f\n", i, data[i] );
 //   }
   return 1; // success
@@ -134,6 +136,31 @@ int leadingDigit( double n ) {
 } // end leadingDigit
 
 
+// Return the leading Digit of n.
+// a little more than twice as slow as leadingDigit
+int leadingDigitStr( double n ) {
+    char s[100];
+    sprintf(s, "%f", n);
+    n = s[0]-'0';
+    return n;
+}
+
+
+// Return the leading Digit of n.
+int leadingDigitLog( double n ) {
+
+    n = fabs(n);//make sure n is positive
+
+    //getting the power of 10 the double iss
+    double exp = floor(log10(n));
+
+    //get the base of 10 to divide by
+    double base = pow(10,exp);
+
+    int lead_dig = (int)(floor(n/base));
+    return lead_dig;
+}
+
 /* Main routine. */
 int main(int argc, char* argv[]) 
 {
@@ -163,8 +190,8 @@ int main(int argc, char* argv[])
     printf( "There are %d %d's\n", global_counts[i], i );
   }
          
-  printf("It took %f seconds for the whole thing to run\n",t2-t1); 
-
+  printf("It took %f seconds for the whole thing to run\n",t2-t1);
+  printf("Total numbers in file: %d",N);
   // We are responsible for calling loadData, so we are responsible
   // for freeing the data array.
   free( data );

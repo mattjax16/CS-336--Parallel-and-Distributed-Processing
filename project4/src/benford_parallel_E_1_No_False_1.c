@@ -16,7 +16,7 @@
  */
 
 /**
-medium Expected output on I9 10900k:
+medieum Expected output on I9 10900k:
 There are 3217 1's
 There are 1779 2's
 There are 1121 3's
@@ -64,9 +64,10 @@ typedef struct _threadData{
     int tid;
 } threadData;
 
+//making a padded data type
 
 // Global variables
-int threads_global_counts[10*NUM_THREADS] = {0};
+long int threads_global_counts[10*NUM_THREADS] = {0};
 int global_counts[10] = {0};
 int N = 0;
 double *data;

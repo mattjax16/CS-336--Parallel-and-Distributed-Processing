@@ -69,6 +69,27 @@ benford_parallel_E_1_val :	$(SRC)benford_parallel_E_1.c $(SRC)my_timing.o
 
 
 
+
+benford_parallel_E_1_No_False_1 :	$(SRC)benford_parallel_E_1_No_False_1.c $(SRC)my_timing.o
+	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_1_No_False_1 $(SRC)benford_parallel_E_1_No_False_1.c $(LFLAGS)
+	./$(BIN)benford_parallel_E_1_No_False_1
+
+benford_parallel_E_1_No_False_1_val :	$(SRC)benford_parallel_E_1_No_False.c $(SRC)my_timing.o
+	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_1_No_False_1 $(SRC)benford_parallel_E_1_No_False_1.c $(LFLAGS)
+	valgrind ./$(BIN)benford_parallel_E_1_No_False_1
+
+
+
+benford_parallel_E_1_No_False_2 :	$(SRC)benford_parallel_E_1_No_False_2.c $(SRC)my_timing.o
+	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_1_No_False_2 $(SRC)benford_parallel_E_1_No_False_2.c $(LFLAGS)
+	./$(BIN)benford_parallel_E_1_No_False_2
+
+benford_parallel_E_1_No_False_2_val :	$(SRC)benford_parallel_E_1_No_False_2.c $(SRC)my_timing.o
+	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_1_No_False_2 $(SRC)benford_parallel_E_1_No_False_2.c $(LFLAGS)
+	valgrind ./$(BIN)benford_parallel_E_1_No_False_2
+
+
+
 benford_parallel_E_2 :	$(SRC)benford_parallel_E_2.c $(SRC)my_timing.o
 	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_2 $(SRC)benford_parallel_E_2.c $(LFLAGS)
 	./$(BIN)benford_parallel_E_2
@@ -101,7 +122,7 @@ benford_parallel_F_2_val :	$(SRC)benford_parallel_F_1.c $(SRC)my_timing.o
 
 
 clean :
-	rm -rf *~ *.o benford_sequential
+	rm -rf *~ *.o benford_sequential benford_parallel_A benford_parallel_B benford_parallel_C benford_parallel_D benford_parallel_E_1 benford_parallel_E_2 benford_parallel_F_1 benford_parallel_F_2
 
 # Inference rules
 %.o : %.c

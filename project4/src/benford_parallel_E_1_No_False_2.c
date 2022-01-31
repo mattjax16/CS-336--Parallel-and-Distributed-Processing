@@ -3,7 +3,7 @@
  * Matt Bass
  * CS333
  * Project 4 : Confirming Benford's Law with pthreads
- * task 2 E_1 (creating a 10*numthread array of ints)
+ * task 2 E_1 (creating a 10*numthread array of padded int structs to prevent false sharing)
  *
  * Global Counter Array of Arrays, Grouped by Thread, no Mutex:
  * Use a global variable that is an array of ints with 10*NUM_THREADS entries.
@@ -16,7 +16,7 @@
  */
 
 /**
-medium Expected output on I9 10900k:
+Medium Expected output on I9 10900k:
 There are 3217 1's
 There are 1779 2's
 There are 1121 3's
@@ -26,8 +26,9 @@ There are 668 6's
 There are 591 7's
 There are 495 8's
 There are 477 9's
-It took 0.000229 seconds for the whole thing to run
+It took 0.000209 seconds for the whole thing to run
 Total numbers in file: 10000
+Process finished with exit code 0
 */
 /**
 Long Expected output on I9 10900k:
@@ -40,7 +41,21 @@ There are 65134 6's
 There are 57202 7's
 There are 51298 8's
 There are 46745 9's
-It took 0.004484 seconds for the whole thing to run
+It took 0.002068 seconds for the whole thing to run
+Total numbers in file: 1000000
+*/
+/**
+Longer non benford Expected output on I9 10900k:
+There are 111316 1's
+There are 111213 2's
+There are 111439 3's
+There are 110671 4's
+There are 110874 5's
+There are 110761 6's
+There are 111663 7's
+There are 110801 8's
+There are 111262 9's
+It took 0.001408 seconds for the whole thing to run
 Total numbers in file: 1000000
 */
 
@@ -64,9 +79,18 @@ typedef struct _threadData{
     int tid;
 } threadData;
 
+//making a padded data type
+typedef struct _paddedCount{
+    int count;
+
+    //make array of 15 ints to take up other 60 bytes to hold up a whole cache line
+    // in x86
+    int padding[15];
+}paddedCount;
 
 // Global variables
-int threads_global_counts[10*NUM_THREADS] = {0};
+paddedCount threads_global_counts[10*NUM_THREADS];
+
 int global_counts[10] = {0};
 int N = 0;
 double *data;
@@ -154,7 +178,7 @@ void* thrCount(void* arg){
 //        } else{
 //            threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
 //        }
-        threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid]++;
+        threads_global_counts[(thr_data->tid*9)+leading_digit+thr_data->tid].count++;
 
 
     }
@@ -169,14 +193,16 @@ int main(int argc, char* argv[])
     int numThreads = 8;
     // Load the data
     int succ;
-    // succ = loadData( "bin/longer_nonBenford.bin" );
+     succ = loadData( "bin/longer_nonBenford.bin" );
 //      succ = loadData( "bin/medium.bin" );
-    succ = loadData( "bin/longer.bin" );
+//    succ = loadData( "bin/longer.bin" );
 
 
 
 
     if (!succ) { return -1; }
+
+
 
     // Start the timer after we have loaded the data.
     double t1, t2;
@@ -211,7 +237,7 @@ int main(int argc, char* argv[])
     //combine the threads_global_counts into global counts array
     for (int i = 0; i < numThreads; i++) {
         for(int j = 0; j<10;j++){
-            global_counts[j] += threads_global_counts[(i*9)+j+i];
+            global_counts[j] += threads_global_counts[(i*9)+j+i].count;
         };
     }
 
