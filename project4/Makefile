@@ -12,6 +12,9 @@ benford_sequential_val :	$(SRC)benford_sequential.c $(SRC)my_timing.o
 	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_sequential $(SRC)benford_sequential.c $(LFLAGS)
 	valgrind ./$(BIN)benford_sequential
 
+benford_sequential_mac : $(SRC)benford_sequential.c 
+	$(CC) -o $(BIN)benford_sequential $(SRC)my_timing.c $(SRC)benford_sequential.c $(LFLAGS)
+	./$(BIN)benford_sequential
 
 
 
@@ -97,6 +100,11 @@ benford_parallel_E_2 :	$(SRC)benford_parallel_E_2.c $(SRC)my_timing.o
 benford_parallel_E_2_val :	$(SRC)benford_parallel_E_2.c $(SRC)my_timing.o
 	$(CC) $(CFLAGS) $(SRC)my_timing.o -o $(BIN)benford_parallel_E_2 $(SRC)benford_parallel_E_2.c $(LFLAGS)
 	valgrind ./$(BIN)benford_parallel_E_2
+
+
+benford_parallel_E_2_mac : $(SRC)benford_parallel_E_2.c 
+	$(CC) -o $(BIN)benford_parallel_E_2 $(SRC)my_timing.c $(SRC)benford_parallel_E_2.c $(LFLAGS)
+	./$(BIN)benford_parallel_E_2
 
 
 
