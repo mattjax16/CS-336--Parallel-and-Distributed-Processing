@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
+#include "my_timing.h"
 #include "fish_production_stucs.h"
 
 /** Defining the global variables for the production*/
@@ -273,6 +275,11 @@ int main(int argc, char *argv[]) {
         ll_append(starting_bin->fish_in_buffer,new_fish);
     }
 
+
+    /// Starting my timing after all the fish have been put in the correct buffer
+    double start_time, end_time;
+    start_time = get_time_sec();
+
     //setting up the worker threads
     threadData thread_d[NUM_WORKERS];
     /// make the thread id for the threads (workers)
@@ -310,7 +317,18 @@ int main(int argc, char *argv[]) {
         pthread_cond_destroy(&buffer_nonfull_conds);
     }
 
-    printf("\nDone with all %lu fish",FISH_DONE);
+    // Ending the timer
+    end_time = get_time_sec();
+
+    double total_time = end_time - start_time;
+
+
+    printf("\nIn total it took %f seconds to process all %lu fish",
+           total_time
+           ,FISH_DONE);
+
+    printf("\nWith each fish taking on average %f seconds to process",
+           (total_time)/NUM_FISH);
 
 }
 
