@@ -36,3 +36,21 @@ void workerBuffer_destroy(workerBuffer* wb){
     ///free the word buffer
     free(wb);
 }
+
+
+
+/// Function to see if the worker buffer is empty
+int workerBuffer_isEmpty(workerBuffer* wb){
+    if(wb->fish_in_buffer->size == 0){
+        return 1;
+    }
+    return 0;
+}
+
+/// Function to see if the worker buffer is full
+int workerBuffer_isFull(workerBuffer* wb){
+    if(wb->fish_in_buffer->size == wb->max_capacity){
+        return 1;
+    }
+    return 0;
+}

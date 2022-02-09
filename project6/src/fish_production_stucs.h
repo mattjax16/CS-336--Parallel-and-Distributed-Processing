@@ -36,6 +36,11 @@ workerBuffer* workerBuffer_create(long unsigned int max_cap);
 /// function to destroy a workerBuffer and make sure there is no memory leak
 void workerBuffer_destroy(workerBuffer* wb);
 
+/// Function to see if the worker buffer is empty
+int workerBuffer_isEmpty(workerBuffer* wb);
+
+/// Function to see if the worker buffer is full
+int workerBuffer_isFull(workerBuffer* wb);
 
 
 
